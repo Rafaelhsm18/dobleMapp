@@ -2,37 +2,45 @@
 <html xmlns:th="http://www.thymeleaf.org" 
       th:with="contenido=~{::.contenido-principal}, titulo=${empleado.id == null} ? 'Nuevo Empleado' : 'Editar Empleado'">
       
-    <div th:replace="~{layout :: main}"></div>
+    <div th:replace="~{/layout :: main-container}"></div>
 
     <div class="contenido-principal">
-        <div class="card">
-            <div class="card-header">
-                <h3 th:text="${titulo}"></h3>
-            </div>
-            <div class="card-body">
-                <form th:action="@{/empleados/guardar}" th:object="${empleado}" method="post">
-                    <input type="hidden" th:field="*{id}" />
-                    
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h3 th:text="${titulo}"></h3>
                     </div>
-                    <div class="mb-3">
-                        <label for="apellidos" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}" required>
+                    <div class="card-body">
+                        <form th:action="@{/empleados/guardar}" th:object="${empleado}" method="post">
+                            <input type="hidden" th:field="*{id}" />
+                            
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="apellidos" class="form-label">Apellidos</label>
+                                <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cargo" class="form-label">Cargo</label>
+                                <input type="text" class="form-control" id="cargo" th:field="*{cargo}">
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="d-flex justify-content-end">
+                                <a th:href="@{/empleados}" class="btn btn-secondary me-2">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle"></i> Guardar
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="mb-3">
-                        <label for="cargo" class="form-label">Cargo</label>
-                        <input type="text" class="form-control" id="cargo" th:field="*{cargo}">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle-fill"></i> Guardar
-                    </button>
-                    <a th:href="@{/empleados}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle-fill"></i> Cancelar
-                    </a>
-                </form>
+                </div>
             </div>
         </div>
     </div>
