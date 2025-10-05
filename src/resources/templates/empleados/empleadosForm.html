@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario de Empleado</title>
+</head>
+<body>
+    <div class="container">
+        <h1 th:text="${empleado.id == null} ? 'Nuevo Empleado' : 'Editar Empleado'"></h1>
+        <form th:action="@{/empleados/guardar}" th:object="${empleado}" method="post">
+            <input type="hidden" th:field="*{id}" />
+            
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+            </div>
+            <div class="mb-3">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}" required>
+            </div>
+            <div class="mb-3">
+                <label for="cargo" class="form-label">Cargo</label>
+                <input type="text" class="form-control" id="cargo" th:field="*{cargo}">
+            </div>
+            
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a th:href="@{/empleados}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>
