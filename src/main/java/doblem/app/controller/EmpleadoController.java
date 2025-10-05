@@ -32,7 +32,7 @@ public class EmpleadoController {
  @GetMapping("/nuevo")
  public String mostrarFormularioNuevo(Model model) {
      model.addAttribute("empleado", new Empleados());
-     return "empleados/formulario"; // Devuelve el archivo templates/empleados/formulario.html
+     return "empleados/empleadosForm"; // Devuelve el archivo templates/empleados/formulario.html
  }
  
  // Muestra el formulario para editar un empleado existente
