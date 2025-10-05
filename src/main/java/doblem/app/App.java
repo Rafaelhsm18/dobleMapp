@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 /**
  * Clase principal que inicia toda la aplicación de Spring Boot.
  */
+
 @SpringBootApplication
 @EnableJpaAuditing // Habilita la auditoría automática para los campos de fecha y usuario
 public class App {
