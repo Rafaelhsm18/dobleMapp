@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      th:with="contenido=~{::.contenido-principal}, titulo=${empleado.id == null} ? 'Nuevo Empleado' : 'Editar Empleado'">
-      
-    <div th:replace="~{/layout :: main-container}"></div>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo=${empleado.id == null} ? 'Nuevo Empleado' : 'Editar Empleado', contenido=~{::.contenido-principal})}">
 
+<body>
     <div class="contenido-principal">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h3 th:text="${titulo}"></h3>
+                    <div class="card-header bg-dark text-white">
+                        <h3 th:text="${empleado.id == null} ? 'Nuevo Empleado' : 'Editar Empleado'"></h3>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         <form th:action="@{/empleados/guardar}" th:object="${empleado}" method="post">
                             <input type="hidden" th:field="*{id}" />
                             
@@ -28,7 +27,7 @@
                                 <input type="text" class="form-control" id="cargo" th:field="*{cargo}">
                             </div>
                             
-                            <hr>
+                            <hr class="my-4">
                             
                             <div class="d-flex justify-content-end">
                                 <a th:href="@{/empleados}" class="btn btn-secondary me-2">
@@ -44,4 +43,5 @@
             </div>
         </div>
     </div>
+</body>
 </html>
