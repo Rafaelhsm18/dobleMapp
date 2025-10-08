@@ -1,0 +1,30 @@
+# Ignorar archivos de compilación de Java (.class)
+**/*.class
+
+# Ignorar el archivo .factorypath de Eclipse
+.factorypath
+
+# Otras configuraciones comunes para Spring Boot
+
+# Archivos de logs
+logs/
+*.log
+
+# Archivos generados por el build
+target/
+build/
+*.jar
+*.war
+*.ear
+
+# Archivos específicos de IDEs
+.idea/
+*.iml
+*.iws
+.classpath
+.project
+.settings/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db

@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      th:with="contenido=~{::.contenido-principal}, titulo='Gestión de Empleados'">
-      
-    <div th:replace="~{/layout :: main-container}"></div>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Gestión de Empleados', contenido=~{::.contenido-principal})}">
 
+<body>
     <div class="contenido-principal">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Empleados</h1>
-            <a th:href="@{/empleados/nuevo}" class="btn btn-primary btn-lg">
+            <a th:href="@{/empleados/nuevo}" class="btn btn-primary btn-lg shadow-sm">
                 <i class="bi bi-person-plus-fill"></i> Añadir Empleado
             </a>
         </div>
@@ -15,11 +14,11 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <div class="col" th:each="empleado : ${empleados}">
                 <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                    <div class="card-body text-center">
                         <h5 class="card-title" th:text="${empleado.nombre} + ' ' + ${empleado.apellidos}"></h5>
                         <h6 class="card-subtitle mb-2 text-muted" th:text="${empleado.cargo}"></h6>
                     </div>
-                    <div class="card-footer bg-transparent border-top-0 d-flex justify-content-end">
+                    <div class="card-footer bg-light d-flex justify-content-center border-0 pt-0">
                         <a th:href="@{/empleados/editar/{id}(id=${empleado.id})}" class="btn btn-sm btn-outline-warning me-2">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
@@ -30,6 +29,6 @@
                 </div>
             </div>
         </div>
-
     </div>
+</body>
 </html>
