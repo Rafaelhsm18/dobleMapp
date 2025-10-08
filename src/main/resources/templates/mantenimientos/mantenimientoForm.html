@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Registrar Mantenimiento', contenido=~{::.contenido-principal})}">
+
+<body>
+<div class="contenido-principal">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h3>Registrar Mantenimiento para: <span th:text="${mantenimiento.equipo.nombre}"></span></h3>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/equipos/{id}/mantenimientos/guardar(id=${mantenimiento.equipo.id})}" th:object="${mantenimiento}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+                        <input type="hidden" th:field="*{equipo}" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fechaMantenimiento" class="form-label">Fecha y Hora</label>
+                                <input type="datetime-local" class="form-control" id="fechaMantenimiento" th:field="*{fechaMantenimiento}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="tipoMantenimiento" class="form-label">Tipo de Mantenimiento</label>
+                                <select class="form-select" id="tipoMantenimiento" th:field="*{tipoMantenimiento}">
+                                    <option value="Preventivo">Preventivo</option>
+                                    <option value="Correctivo">Correctivo</option>
+                                    <option value="Calibración">Calibración</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="empleadoRealiza" class="form-label">Realizado por</label>
+                            <select class="form-select" id="empleadoRealiza" th:field="*{empleadoRealiza}">
+                                <option value="">-- Seleccionar Empleado --</option>
+                                <option th:each="empleado : ${empleados}"
+                                        th:value="${empleado.id}"
+                                        th:text="${empleado.nombre} + ' ' + ${empleado.apellidos}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción del Trabajo Realizado</label>
+                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="4" required></textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/equipos/{id}/mantenimientos(id=${mantenimiento.equipo.id})}" class="btn btn-secondary me-2">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Guardar Registro
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

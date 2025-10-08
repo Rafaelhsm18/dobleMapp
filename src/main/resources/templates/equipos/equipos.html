@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Gestión de Equipos', contenido=~{::.contenido-principal})}">
+
+<body>
+    <div class="contenido-principal">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Equipos</h1>
+            <a th:href="@{/equipos/nuevo}" class="btn btn-primary btn-lg shadow-sm">
+                <i class="bi bi-plus-circle-fill"></i> Añadir Equipo
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Estado</th>
+                            <th>Fecha de Adquisición</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+					<tbody>
+					    <tr th:each="equipo : ${equipos}">
+					        <td th:text="${equipo.id}"></td>
+					        <td th:text="${equipo.nombre}"></td>
+					        <td>
+					            <span class="badge"
+					                  th:classappend="${equipo.estado == 'Operativo'} ? 'bg-success' : (${equipo.estado == 'En Mantenimiento'} ? 'bg-warning' : 'bg-danger')"
+					                  th:text="${equipo.estado}"></span>
+					        </td>
+					        <td th:text="${#temporals.format(equipo.fechaAdquisicion, 'dd/MM/yyyy')}"></td>
+					        <td class="text-center">
+					            <a th:href="@{/equipos/{id}/mantenimientos(id=${equipo.id})}" class="btn btn-sm btn-outline-info me-2">
+					                <i class="bi bi-journal-text"></i> Historial
+					            </a>
+					            <a th:href="@{/equipos/editar/{id}(id=${equipo.id})}" class="btn btn-sm btn-outline-warning me-2">
+					                <i class="bi bi-pencil"></i> Editar
+					            </a>
+					            <a th:href="@{/equipos/borrar/{id}(id=${equipo.id})}" class="btn btn-sm btn-outline-danger">
+					                <i class="bi bi-trash"></i> Borrar
+					            </a>
+					        </td>
+					    </tr>
+					</tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

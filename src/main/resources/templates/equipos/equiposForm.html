@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo=${equipo.id == null} ? 'Nuevo Equipo' : 'Editar Equipo', contenido=~{::.contenido-principal})}">
+
+<body>
+<div class="contenido-principal">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h3 th:text="${equipo.id == null} ? 'Nuevo Equipo' : 'Editar Equipo'"></h3>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/equipos/guardar}" th:object="${equipo}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Equipo</label>
+                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fechaAdquisicion" class="form-label">Fecha de Adquisición</label>
+                                <input type="date" class="form-control" id="fechaAdquisicion" th:field="*{fechaAdquisicion}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="estado" class="form-label">Estado</label>
+                                <select class="form-select" id="estado" th:field="*{estado}">
+                                    <option value="Operativo">Operativo</option>
+                                    <option value="En Mantenimiento">En Mantenimiento</option>
+                                    <option value="Averiado">Averiado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/equipos}" class="btn btn-secondary me-2">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
