@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Plantilla de Proceso', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <a th:href="@{/tipos-producto}" class="btn btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Volver a Tipos de Producto</a>
+    <h1 th:text="'Plantilla para: ' + ${tipoProducto.nombre}"></h1>
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Secuencia de Etapas</h4></div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                        <tr th:each="paso : ${plantilla}">
+                            <td><span class="badge bg-dark me-2" th:text="${paso.orden}"></span> <strong th:text="${paso.etapa.nombreEtapa}"></strong></td>
+                            <td class="text-end">
+                                <a th:href="@{/tipos-producto/{tipoId}/plantilla/borrar-etapa/{etapaId}(tipoId=${tipoProducto.id}, etapaId=${paso.etapa.id})}" class="btn btn-sm btn-outline-danger py-0">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(plantilla)}">
+                            <td colspan="2" class="text-center text-muted">Aún no hay etapas en esta plantilla.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Añadir Etapa a la Plantilla</h4></div>
+                <div class="card-body">
+                    <form th:action="@{/tipos-producto/{id}/plantilla/agregar-etapa(id=${tipoProducto.id})}" method="post">
+                        <div class="mb-3">
+                            <label for="etapaId" class="form-label">Etapa</label>
+                            <select class="form-select" id="etapaId" name="etapaId" required>
+                                <option th:each="etapa : ${etapasMaestro}" th:value="${etapa.id}" th:text="${etapa.nombreEtapa}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="orden" class="form-label">Orden (Nº de Paso)</label>
+                            <input type="number" class="form-control" name="orden" id="orden" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Añadir a Plantilla</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

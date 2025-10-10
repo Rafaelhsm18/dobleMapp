@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Maestro de Etapas', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Maestro de Etapas</h1>
+        <a th:href="@{/etapas-maestro/nuevo}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-plus-circle-fill"></i> Añadir Etapa
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción General</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="etapa : ${etapas}">
+                    <td th:text="${etapa.nombreEtapa}"></td>
+                    <td th:text="${etapa.descripcionGeneral}"></td>
+                    <td class="text-center">
+                        <a th:href="@{/etapas-maestro/editar/{id}(id=${etapa.id})}" class="btn btn-sm btn-outline-warning me-2">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a th:href="@{/etapas-maestro/borrar/{id}(id=${etapa.id})}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i> Borrar
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

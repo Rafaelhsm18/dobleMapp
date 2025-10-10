@@ -136,3 +136,31 @@ CREATE TABLE Mantenimientos_Equipo (
     FOREIGN KEY (ID_Equipo) REFERENCES Equipos(ID_Equipo), FOREIGN KEY (ID_Empleado_Realiza) REFERENCES Empleados(ID_Empleado),
     creado_por VARCHAR(100), fecha_creacion DATETIME, modificado_por VARCHAR(100), fecha_modificacion DATETIME
 ) ENGINE=InnoDB;
+
+USE doblem;
+-- Primero, eliminamos la columna incorrecta que creaba el conflicto
+ALTER TABLE Lotes_Producto DROP COLUMN Fecha_Creacion;
+
+-- Después, añadimos la columna correcta que necesita la auditoría
+ALTER TABLE Lotes_Producto ADD COLUMN fecha_creacion DATETIME NULL AFTER Codigo_Lote_Interno;
+
+
+ALTER TABLE Ingredientes_Formula DROP PRIMARY KEY;
+ALTER TABLE Ingredientes_Formula ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+
+
+-- Primero, eliminamos la clave foránea antigua
+ALTER TABLE Plantillas_Proceso DROP FOREIGN KEY plantillas_proceso_ibfk_1;
+
+-- Luego, cambiamos la columna
+ALTER TABLE Plantillas_Proceso CHANGE COLUMN ID_Producto ID_TipoProducto INT NOT NULL;
+
+-- Finalmente, creamos la nueva clave foránea apuntando a TiposProducto
+ALTER TABLE Plantillas_Proceso ADD CONSTRAINT fk_plantilla_tipoproducto 
+FOREIGN KEY (ID_TipoProducto) REFERENCES TiposProducto(ID_TipoProducto);
+
+ALTER TABLE Plantillas_Proceso DROP COLUMN Instrucciones_Estandar;
+
+ALTER TABLE Registro_Etapas_Lote ADD COLUMN confirmado BOOLEAN DEFAULT FALSE;
+
+

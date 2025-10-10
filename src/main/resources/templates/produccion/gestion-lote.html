@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Gestionar Lote', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <a th:href="@{/produccion}" class="btn btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Volver a Lotes</a>
+    <h1 th:text="'Gestionando Lote: ' + ${lote.codigoLoteInterno}"></h1>
+    <h4 th:text="${lote.producto.nombre}" class="text-muted"></h4>
+    <hr>
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Plan de Producción</h4></div>
+                <ul class="list-group list-group-flush">
+                    <li th:each="paso : ${plantilla}" class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <span class="badge bg-dark me-2" th:text="${paso.orden}"></span>
+                                <span th:text="${paso.etapa.nombreEtapa}"></span>
+                            </h5>
+                            <th:block th:with="registroEncontrado=false">
+                                <th:block th:each="reg : ${registros}" th:if="${reg.etapa.id == paso.etapa.id}">
+                                    <small class="text-success"><i class="bi bi-check-circle-fill"></i> Completado</small>
+                                    <th:block th:with="registroEncontrado=true"></th:block>
+                                </th:block>
+                                <small th:if="${!registroEncontrado}" class="text-muted">Pendiente</small>
+                            </th:block>
+                        </div>
+                        <p class="mb-1" th:text="${paso.etapa.descripcionGeneral}"></p>
+
+                        <th:block th:each="reg : ${registros}" th:if="${reg.etapa.id == paso.etapa.id}">
+                             <small class="d-block text-muted" th:text="'Realizado por: ' + (${reg.empleado != null} ? ${reg.empleado.nombre} : 'N/A') + ' el ' + ${#temporals.format(reg.fechaCompletado, 'dd/MM/yy HH:mm')}"></small>
+                             <small th:if="${reg.confirmado}" class="d-block text-success"><i class="bi bi-patch-check-fill"></i> Pasos confirmados</small>
+                        </th:block>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Registrar Siguiente Etapa</h4></div>
+                <div class="card-body">
+                    <form th:action="@{/produccion/gestionar/{loteId}/registrar-etapa(loteId=${lote.id})}" method="post">
+                        <div class="mb-3">
+                            <label for="etapa" class="form-label">Etapa a Registrar</label>
+                            <select class="form-select" id="etapa" name="etapa" required>
+                                <option value="">-- Seleccionar etapa pendiente --</option>
+                                <option th:each="pasoPendiente : ${pasosPendientes}" th:value="${pasoPendiente.etapa.id}" th:text="${pasoPendiente.etapa.nombreEtapa}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="empleado" class="form-label">Realizado por</label>
+                            <select class="form-select" id="empleado" name="empleado">
+                                <option value="">-- Opcional --</option>
+                                <option th:each="emp : ${empleados}" th:value="${emp.id}" th:text="${emp.nombre} + ' ' + ${emp.apellidos}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label">Observaciones</label>
+                            <textarea class="form-control" name="observaciones" id="observaciones" rows="2"></textarea>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="confirmado" value="true" id="confirmado">
+                            <label class="form-check-label" for="confirmado">
+                                Confirmo que he seguido todos los pasos de la etapa.
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Registrar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

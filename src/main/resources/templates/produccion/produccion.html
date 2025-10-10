@@ -37,9 +37,9 @@
 						          th:text="${lote.estado}"></span>
 						</td>
 	                    <td class="text-center">
-	                        <a th:href="@{/produccion/editar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-warning me-2">
-	                            <i class="bi bi-pencil"></i> Editar
-	                        </a>
+							<a th:href="@{/produccion/gestionar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-primary me-2">
+							       <i class="bi bi-sliders"></i> Gestionar
+							</a>
 	                        <a th:href="@{/produccion/borrar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-danger">
 	                            <i class="bi bi-trash"></i> Borrar
 	                        </a>

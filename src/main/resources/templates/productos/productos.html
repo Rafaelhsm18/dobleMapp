@@ -32,14 +32,17 @@
                     <td th:text="${prod.nombre}"></td>
                     <td th:text="${prod.tipoProducto != null} ? ${prod.tipoProducto.nombre} : 'N/A'"></td>
                     <td th:text="${prod.precioVenta != null} ? ${#numbers.formatCurrency(prod.precioVenta)} : 'N/A'"></td>
-                    <td class="text-center">
-                        <a th:href="@{/productos/editar/{id}(id=${prod.id})}" class="btn btn-sm btn-outline-warning me-2">
-                            <i class="bi bi-pencil"></i> Editar
-                        </a>
-                        <a th:href="@{/productos/borrar/{id}(id=${prod.id})}" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash"></i> Borrar
-                        </a>
-                    </td>
+					<td class="text-center">
+					    <a th:href="@{/productos/{id}/formula(id=${prod.id})}" class="btn btn-sm btn-outline-info me-2">
+					        <i class="bi bi-card-checklist"></i> Fórmula
+					    </a>
+					    <a th:href="@{/productos/editar/{id}(id=${prod.id})}" class="btn btn-sm btn-outline-warning me-2">
+					        <i class="bi bi-pencil"></i> Editar
+					    </a>
+					    <a th:href="@{/productos/borrar/{id}(id=${prod.id})}" class="btn btn-sm btn-outline-danger">
+					        <i class="bi bi-trash"></i> Borrar
+					    </a>
+					</td>
                 </tr>
                 </tbody>
             </table>

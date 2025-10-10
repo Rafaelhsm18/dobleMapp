@@ -3,6 +3,11 @@
       th:insert="~{/layout :: layout(titulo='Tipos de Producto', contenido=~{::.contenido-principal})}">
 <body>
 <div class="contenido-principal">
+
+    <a th:href="@{/productos}" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Volver a Productos
+    </a>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Tipos de Producto</h1>
         <a th:href="@{/tipos-producto/nuevo}" class="btn btn-primary btn-lg shadow-sm">
@@ -24,6 +29,9 @@
                     <td th:text="${tipo.id}"></td>
                     <td th:text="${tipo.nombre}"></td>
                     <td class="text-center">
+						<a th:href="@{/tipos-producto/{id}/plantilla(id=${tipo.id})}" class="btn btn-sm btn-outline-info me-2">
+						        <i class="bi bi-list-ol"></i> Plantilla
+						 </a>
                         <a th:href="@{/tipos-producto/borrar/{id}(id=${tipo.id})}" class="btn btn-sm btn-outline-danger">
                             <i class="bi bi-trash"></i> Borrar
                         </a>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Fórmula del Producto', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <a th:href="@{/productos}" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Volver a Productos
+    </a>
+    <h1 th:text="'Fórmula para: ' + ${producto.nombre}"></h1>
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Ingredientes</h4></div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Materia Prima</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+							<tbody>
+							<tr th:each="ing : ${formula.ingredientes}">
+							    <td th:text="${ing.materiaPrima.nombre}"></td>
+							    <td th:text="${#numbers.formatDecimal(ing.cantidad, 1, 0)}"></td>
+							    <td th:text="${ing.unidadMedida}"></td>
+							    <td>
+							        <a th:href="@{/productos/{prodId}/formula/ingredientes/borrar/{mpId}(prodId=${producto.id}, mpId=${ing.materiaPrima.id})}"
+							           class="btn btn-sm btn-outline-danger">
+							            <i class="bi bi-trash"></i>
+							        </a>
+							    </td>
+							</tr>
+                        <tr th:if="${#lists.isEmpty(formula.ingredientes)}">
+                            <td colspan="4" class="text-center text-muted">Aún no hay ingredientes en la fórmula.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Añadir Ingrediente</h4></div>
+                <div class="card-body">
+                    <form th:action="@{/productos/{id}/formula/ingredientes/agregar(id=${producto.id})}" method="post">
+                        <div class="mb-3">
+                            <label for="materiaPrimaId" class="form-label">Materia Prima</label>
+                            <select class="form-select" id="materiaPrimaId" name="materiaPrimaId" required>
+                                <option value="">-- Seleccionar --</option>
+                                <option th:each="mp : ${materiasPrimas}"
+                                        th:value="${mp.id}"
+                                        th:text="${mp.nombre}"></option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-7">
+                                <label for="cantidad" class="form-label">Cantidad</label>
+                                <input type="number" step="0.01" class="form-control" name="cantidad" id="cantidad" required>
+                            </div>
+                            <div class="col-5">
+                                <label for="unidadMedida" class="form-label">Unidad</label>
+                                <input type="text" class="form-control" name="unidadMedida" id="unidadMedida" required placeholder="ej: gr, ml, ud">
+                            </div>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle"></i> Añadir a la Fórmula
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

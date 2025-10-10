@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo=${etapa.id == null} ? 'Nueva Etapa' : 'Editar Etapa', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h3 th:text="${etapa.id == null} ? 'Añadir Nueva Etapa' : 'Editar Etapa'"></h3>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/etapas-maestro/guardar}" th:object="${etapa}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-3">
+                            <label for="nombreEtapa" class="form-label">Nombre de la Etapa</label>
+                            <input type="text" class="form-control" th:field="*{nombreEtapa}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="descripcionGeneral" class="form-label">Descripción / Pasos a Seguir</label>
+                            <textarea class="form-control" th:field="*{descripcionGeneral}" rows="5" placeholder="Describe los pasos detallados para esta etapa..."></textarea>
+                        </div>
+
+                        <hr class="my-4">
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/etapas-maestro}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
