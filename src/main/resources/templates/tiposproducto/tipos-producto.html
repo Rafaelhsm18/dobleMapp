@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Tipos de Producto', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Tipos de Producto</h1>
+        <a th:href="@{/tipos-producto/nuevo}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-plus-circle-fill"></i> Añadir Tipo
+        </a>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tipo : ${tipos}">
+                    <td th:text="${tipo.id}"></td>
+                    <td th:text="${tipo.nombre}"></td>
+                    <td class="text-center">
+                        <a th:href="@{/tipos-producto/borrar/{id}(id=${tipo.id})}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i> Borrar
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

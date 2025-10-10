@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Gestión de Producción', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Lotes de Producción</h1>
+        <a th:href="@{/produccion/nuevo}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-plus-circle-fill"></i> Iniciar Nuevo Lote
+        </a>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+				<thead class="table-dark">
+	                <tr>
+	                    <th>Cód. Lote</th>
+	                    <th>Producto</th>
+	                    <th>Fecha Creación</th> <th>Cant. Teórica</th>
+	                    <th>Cant. Real</th>
+	                    <th>Estado</th>
+	                    <th class="text-center">Acciones</th>
+	                </tr>
+	                </thead>
+	                <tbody>
+	                <tr th:each="lote : ${lotes}">
+	                    <td th:text="${lote.codigoLoteInterno}"></td>
+	                    <td th:text="${lote.producto.nombre}"></td>
+	                    <td th:text="${#temporals.format(lote.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
+	                    <td th:text="${lote.cantidadTeorica}"></td>
+	                    <td th:text="${lote.cantidadProducidaReal}"></td>
+						<td>
+						    <span class="badge"
+						          th:classappend="${lote.estado == 'Pendiente'} ? 'bg-secondary' :
+						                         (${lote.estado == 'En Proceso'} ? 'bg-primary' :
+						                         (${lote.estado == 'Finalizado'} ? 'bg-success' : 'bg-danger'))"
+						          th:text="${lote.estado}"></span>
+						</td>
+	                    <td class="text-center">
+	                        <a th:href="@{/produccion/editar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-warning me-2">
+	                            <i class="bi bi-pencil"></i> Editar
+	                        </a>
+	                        <a th:href="@{/produccion/borrar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-danger">
+	                            <i class="bi bi-trash"></i> Borrar
+	                        </a>
+	                    </td>
+	                </tr>
+	                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

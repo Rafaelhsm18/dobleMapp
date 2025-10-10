@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Nuevo Tipo de Producto', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white"><h3>Nuevo Tipo de Producto</h3></div>
+                <div class="card-body p-4">
+                    <form th:action="@{/tipos-producto/guardar}" th:object="${tipo}" method="post">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Tipo</label>
+                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                        </div>
+                        <hr class="my-4">
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/tipos-producto}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

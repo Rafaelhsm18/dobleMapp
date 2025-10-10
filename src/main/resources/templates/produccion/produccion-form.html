@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo=${lote.id == null} ? 'Nuevo Lote' : 'Editar Lote', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h3 th:text="${lote.id == null} ? 'Iniciar Nuevo Lote de Producción' : 'Editar Lote de Producción'"></h3>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/produccion/guardar}" th:object="${lote}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3"> <label for="producto" class="form-label">Producto a Fabricar</label>
+                                <select class="form-select" id="producto" th:field="*{producto}" required>
+                                    <option value="">-- Seleccionar Producto --</option>
+                                    <option th:each="prod : ${productos}"
+                                            th:value="${prod.id}"
+                                            th:text="${prod.nombre}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="codigoLoteInterno" class="form-label">Código de Lote Interno</label>
+                            <input type="text" class="form-control" id="codigoLoteInterno" th:field="*{codigoLoteInterno}" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="cantidadTeorica" class="form-label">Cantidad Teórica</label>
+                                <input type="number" step="0.01" class="form-control" id="cantidadTeorica" th:field="*{cantidadTeorica}" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="cantidadProducidaReal" class="form-label">Cantidad Producida</label>
+                                <input type="number" step="0.01" class="form-control" id="cantidadProducidaReal" th:field="*{cantidadProducidaReal}">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="estado" class="form-label">Estado</label>
+                                <select class="form-select" id="estado" th:field="*{estado}">
+								 	 <option value="Pendiente">Pendiente</option>
+									 <option value="En Proceso">En Proceso</option>
+                                    <option value="Finalizado">Finalizado</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/produccion}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

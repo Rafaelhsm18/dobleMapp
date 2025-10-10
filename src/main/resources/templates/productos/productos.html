@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Gestión de Productos', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Productos</h1>
+        <div>
+            <a th:href="@{/tipos-producto}" class="btn btn-secondary btn-lg shadow-sm">
+                <i class="bi bi-tags-fill"></i> Gestionar Tipos
+            </a>
+            <a th:href="@{/productos/nuevo}" class="btn btn-primary btn-lg shadow-sm">
+                <i class="bi bi-plus-circle-fill"></i> Añadir Producto
+            </a>
+        </div>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Precio Venta</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="prod : ${productos}">
+                    <td th:text="${prod.id}"></td>
+                    <td th:text="${prod.nombre}"></td>
+                    <td th:text="${prod.tipoProducto != null} ? ${prod.tipoProducto.nombre} : 'N/A'"></td>
+                    <td th:text="${prod.precioVenta != null} ? ${#numbers.formatCurrency(prod.precioVenta)} : 'N/A'"></td>
+                    <td class="text-center">
+                        <a th:href="@{/productos/editar/{id}(id=${prod.id})}" class="btn btn-sm btn-outline-warning me-2">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a th:href="@{/productos/borrar/{id}(id=${prod.id})}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i> Borrar
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

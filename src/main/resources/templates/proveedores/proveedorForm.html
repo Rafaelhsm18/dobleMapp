@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo=${proveedor.id == null} ? 'Nuevo Proveedor' : 'Editar Proveedor', contenido=~{::.contenido-principal})}">
+
+<body>
+<div class="contenido-principal">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h3 th:text="${proveedor.id == null} ? 'Nuevo Proveedor' : 'Editar Proveedor'"></h3>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/proveedores/guardar}" th:object="${proveedor}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="cif" class="form-label">CIF</label>
+                                <input type="text" class="form-control" id="cif" th:field="*{cif}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="contacto" class="form-label">Contacto</label>
+                                <input type="text" class="form-control" id="contacto" th:field="*{contacto}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección</label>
+                            <textarea class="form-control" id="direccion" th:field="*{direccion}" rows="3"></textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/proveedores}" class="btn btn-secondary me-2">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
