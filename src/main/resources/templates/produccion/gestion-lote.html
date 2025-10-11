@@ -27,7 +27,6 @@
                             </th:block>
                         </div>
                         <p class="mb-1" th:text="${paso.etapa.descripcionGeneral}"></p>
-
                         <th:block th:each="reg : ${registros}" th:if="${reg.etapa.id == paso.etapa.id}">
                              <small class="d-block text-muted" th:text="'Realizado por: ' + (${reg.empleado != null} ? ${reg.empleado.nombre} : 'N/A') + ' el ' + ${#temporals.format(reg.fechaCompletado, 'dd/MM/yy HH:mm')}"></small>
                              <small th:if="${reg.confirmado}" class="d-block text-success"><i class="bi bi-patch-check-fill"></i> Pasos confirmados</small>
@@ -59,13 +58,17 @@
                             <label for="observaciones" class="form-label">Observaciones</label>
                             <textarea class="form-control" name="observaciones" id="observaciones" rows="2"></textarea>
                         </div>
+                        
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="confirmado" value="true" id="confirmado">
+                            <input class="form-check-input" type="checkbox" name="confirmado" value="true" id="confirmado" required>
                             <label class="form-check-label" for="confirmado">
                                 Confirmo que he seguido todos los pasos de la etapa.
                             </label>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Registrar</button>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-check2-square"></i> Finalizar Etapa
+                        </button>
                     </form>
                 </div>
             </div>

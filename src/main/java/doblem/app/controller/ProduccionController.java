@@ -3,6 +3,9 @@ package doblem.app.controller;
 import doblem.app.modelos.LoteProducto;
 import doblem.app.services.LoteProductoService;
 import doblem.app.services.ProductoService;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,8 +45,35 @@ public class ProduccionController {
         return "produccion/produccion-form";
     }
 
+//    @PostMapping("/guardar")
+//    public String guardarLote(@ModelAttribute LoteProducto lote) {
+//        loteProductoService.save(lote);
+//        return "redirect:/produccion";
+//    }
     @PostMapping("/guardar")
-    public String guardarLote(@ModelAttribute LoteProducto lote) {
+    public String guardarLote(@ModelAttribute LoteProducto lote, Model model) {
+
+        Optional<LoteProducto> existente = loteProductoService.findByCodigoLoteInterno(lote.getCodigoLoteInterno());
+
+        if (existente.isPresent() && !existente.get().getId().equals(lote.getId())) {
+            model.addAttribute("error", "El código de lote '" + lote.getCodigoLoteInterno() + "' ya existe. Por favor, elige otro.");
+            
+            // --- LÍNEA AÑADIDA PARA LA SOLUCIÓN 👇 ---
+            // Devolvemos el objeto 'lote' para que el formulario pueda repintar los datos.
+            model.addAttribute("lote", lote);
+            
+            model.addAttribute("productos", productoService.findAll());
+            return "produccion/produccion-form";
+        }
+        
+        if (!"Cancelado".equals(lote.getEstado())) {
+            if (lote.getId() != null) {
+                LoteProducto loteExistente = loteProductoService.findById(lote.getId());
+                if (loteExistente != null) {
+                    lote.setEstado(loteExistente.getEstado());
+                }
+            }
+        }
         loteProductoService.save(lote);
         return "redirect:/produccion";
     }

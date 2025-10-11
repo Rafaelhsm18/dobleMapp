@@ -22,30 +22,33 @@
 	                    <th class="text-center">Acciones</th>
 	                </tr>
 	                </thead>
-	                <tbody>
-	                <tr th:each="lote : ${lotes}">
-	                    <td th:text="${lote.codigoLoteInterno}"></td>
-	                    <td th:text="${lote.producto.nombre}"></td>
-	                    <td th:text="${#temporals.format(lote.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
-	                    <td th:text="${lote.cantidadTeorica}"></td>
-	                    <td th:text="${lote.cantidadProducidaReal}"></td>
-						<td>
-						    <span class="badge"
-						          th:classappend="${lote.estado == 'Pendiente'} ? 'bg-secondary' :
-						                         (${lote.estado == 'En Proceso'} ? 'bg-primary' :
-						                         (${lote.estado == 'Finalizado'} ? 'bg-success' : 'bg-danger'))"
-						          th:text="${lote.estado}"></span>
-						</td>
-	                    <td class="text-center">
-							<a th:href="@{/produccion/gestionar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-primary me-2">
-							       <i class="bi bi-sliders"></i> Gestionar
-							</a>
-	                        <a th:href="@{/produccion/borrar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-danger">
-	                            <i class="bi bi-trash"></i> Borrar
-	                        </a>
-	                    </td>
-	                </tr>
-	                </tbody>
+					<tbody>
+					    <tr th:each="lote : ${lotes}">
+					        <td th:text="${lote.codigoLoteInterno}"></td>
+					        <td th:text="${lote.producto.nombre}"></td>
+					        <td th:text="${#temporals.format(lote.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
+					        <td th:text="${lote.cantidadTeorica}"></td>
+					        <td th:text="${lote.cantidadProducidaReal}"></td>
+					        <td>
+					            <span class="badge"
+					                  th:classappend="${lote.estado == 'Pendiente'} ? 'bg-secondary' :
+					                                 (${lote.estado == 'En Proceso'} ? 'bg-primary' :
+					                                 (${lote.estado == 'Finalizado'} ? 'bg-success' : 'bg-danger'))"
+					                  th:text="${lote.estado}"></span>
+					        </td>
+					        <td class="text-center">
+					            <a th:href="@{/produccion/gestionar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-primary me-2">
+					                <i class="bi bi-sliders"></i> Gestionar
+					            </a>
+					            <a th:href="@{/produccion/editar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-warning me-2">
+					                <i class="bi bi-pencil"></i> Editar
+					            </a>
+					            <a th:href="@{/produccion/borrar/{id}(id=${lote.id})}" class="btn btn-sm btn-outline-danger">
+					                <i class="bi bi-trash"></i> Borrar
+					            </a>
+					        </td>
+					    </tr>
+					</tbody>
             </table>
         </div>
     </div>

@@ -16,14 +16,14 @@
                 <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
-                    <th>Descripción General</th>
+                    <th>Instrucciones</th>
                     <th class="text-center">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="etapa : ${etapas}">
                     <td th:text="${etapa.nombreEtapa}"></td>
-                    <td th:text="${etapa.descripcionGeneral}"></td>
+					<td th:text="${etapa.descripcionGeneral}" style="white-space: pre-line;"></td>
                     <td class="text-center">
                         <a th:href="@{/etapas-maestro/editar/{id}(id=${etapa.id})}" class="btn btn-sm btn-outline-warning me-2">
                             <i class="bi bi-pencil"></i> Editar

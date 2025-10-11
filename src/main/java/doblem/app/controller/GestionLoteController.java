@@ -38,6 +38,8 @@ public class GestionLoteController {
 //        return "produccion/gestion-lote";
 //    }
     
+    
+    
     @GetMapping
     public String mostrarGestionLote(@PathVariable Integer loteId, Model model) {
         LoteProducto lote = loteService.findById(loteId);
@@ -77,26 +79,81 @@ public class GestionLoteController {
 //        return "redirect:/produccion/gestionar/" + loteId;
 //    }
     
+//    @PostMapping("/registrar-etapa")
+//    public String registrarEtapa(@PathVariable Integer loteId, @ModelAttribute RegistroEtapasLote registro) {
+//        LoteProducto lote = loteService.findById(loteId);
+//        registro.setLoteProducto(lote);
+//        if (registro.getFechaCompletado() == null) {
+//            registro.setFechaCompletado(LocalDateTime.now());
+//        }
+//        // Aseguramos que el valor del checkbox se guarde como true/false, no nulo
+//        if (registro.getConfirmado() == null) {
+//            registro.setConfirmado(false);
+//        }
+//        registroService.save(registro);
+//        return "redirect:/produccion/gestionar/" + loteId;
+//    }
+    
+//    @PostMapping("/registrar-etapa")
+//    public String registrarEtapa(@PathVariable Integer loteId, @ModelAttribute RegistroEtapasLote registro) {
+//        // ... (código existente para guardar el registro)
+//        registroService.save(registro);
+//        
+//        // --- LÍNEA AÑADIDA ---
+//        loteService.actualizarEstadoLote(loteId); // Actualizamos el estado del lote
+//
+//        return "redirect:/produccion/gestionar/" + loteId;
+//    }
+
+    
+    // --- MÉTODO CORREGIDO ---
     @PostMapping("/registrar-etapa")
-    public String registrarEtapa(@PathVariable Integer loteId, @ModelAttribute RegistroEtapasLote registro) {
+    public String registrarEtapa(@PathVariable Integer loteId,
+                                 @RequestParam("etapa") Integer etapaId,
+                                 @RequestParam(name = "empleado", required = false) Integer empleadoId,
+                                 @RequestParam("observaciones") String observaciones,
+                                 @RequestParam(name = "confirmado", required = false) Boolean confirmado) {
+
+        // 1. Creamos el objeto vacío
+        RegistroEtapasLote registro = new RegistroEtapasLote();
+
+        // 2. Buscamos las entidades completas usando los IDs
         LoteProducto lote = loteService.findById(loteId);
+        EtapaMaestro etapa = etapaMaestroService.findById(etapaId);
+        if (empleadoId != null) {
+            Empleados empleado = empleadoService.findById(empleadoId);
+            registro.setEmpleado(empleado);
+        }
+
+        // 3. Asignamos todos los valores al objeto
         registro.setLoteProducto(lote);
-        if (registro.getFechaCompletado() == null) {
-            registro.setFechaCompletado(LocalDateTime.now());
-        }
-        // Aseguramos que el valor del checkbox se guarde como true/false, no nulo
-        if (registro.getConfirmado() == null) {
-            registro.setConfirmado(false);
-        }
+        registro.setEtapa(etapa);
+        registro.setObservaciones(observaciones);
+        registro.setConfirmado(confirmado != null && confirmado);
+        registro.setFechaCompletado(LocalDateTime.now());
+
+        // 4. Guardamos el objeto ya completo
         registroService.save(registro);
+
+        // 5. Actualizamos el estado del lote padre
+        loteService.actualizarEstadoLote(loteId);
+
         return "redirect:/produccion/gestionar/" + loteId;
     }
     
-    
-
     @GetMapping("/borrar-registro/{registroId}")
     public String borrarRegistro(@PathVariable Integer loteId, @PathVariable Integer registroId) {
         registroService.deleteById(registroId);
+        
+        // --- LÍNEA AÑADIDA ---
+        loteService.actualizarEstadoLote(loteId); // Actualizamos el estado del lote
+
         return "redirect:/produccion/gestionar/" + loteId;
     }
+
+//    @GetMapping("/borrar-registro/{registroId}")
+//    public String borrarRegistro(@PathVariable Integer loteId, @PathVariable Integer registroId) {
+//        registroService.deleteById(registroId);
+//        return "redirect:/produccion/gestionar/" + loteId;
+//    }
 }
