@@ -12,40 +12,62 @@
                 <div class="card-body p-4">
 
                     <div th:if="${error}" class="alert alert-danger" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                        <span th:text="${error}"></span>
+                        <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${error}"></span>
                     </div>
 
                     <form th:action="@{/produccion/guardar}" th:object="${lote}" method="post">
                         <input type="hidden" th:field="*{id}" />
 
                         <div class="row">
-                            <div class="col-md-12 mb-3">
+                            <div class="col-md-8 mb-3">
                                 <label for="producto" class="form-label">Producto a Fabricar</label>
                                 <select class="form-select" id="producto" th:field="*{producto}" required>
                                     <option value="">-- Seleccionar Producto --</option>
-                                    <option th:each="prod : ${productos}"
-                                            th:value="${prod.id}"
-                                            th:text="${prod.nombre}"></option>
+                                    <option th:each="prod : ${productos}" th:value="${prod.id}" th:text="${prod.nombre}"></option>
                                 </select>
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="cantidadTeorica" class="form-label">Cantidad a Producir (Uds)</label>
+                                <input type="number" step="1" class="form-control" id="cantidadTeorica" th:field="*{cantidadTeorica}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="button" id="btnVerificarStock" class="btn btn-info w-100">
+                                <i class="bi bi-clipboard-data"></i> Verificar Stock de Materias Primas
+                            </button>
+                        </div>
+                        
+                        <div id="resultadoStock" class="mb-3" style="display: none;">
+                             <div id="alertaStock" class="alert alert-warning" role="alert" style="display: none;">
+                                <i class="bi bi-exclamation-triangle-fill"></i> ¡Atención! No hay stock suficiente de algunos materiales.
+                            </div>
+                            <h5>Necesidades para el Lote:</h5>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Materia Prima</th>
+                                        <th>Requerido</th>
+                                        <th>Disponible</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaStockBody">
+                                </tbody>
+                            </table>
                         </div>
 
                         <div class="mb-3">
                             <label for="codigoLoteInterno" class="form-label">Código de Lote Interno</label>
                             <input type="text" class="form-control" id="codigoLoteInterno" th:field="*{codigoLoteInterno}" required>
                         </div>
-                        
+
                         <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="cantidadTeorica" class="form-label">Cantidad Teórica</label>
-                                <input type="number" step="0.01" class="form-control" id="cantidadTeorica" th:field="*{cantidadTeorica}" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="cantidadProducidaReal" class="form-label">Cantidad Producida</label>
+                            <div class="col-md-6 mb-3">
+                                <label for="cantidadProducidaReal" class="form-label">Cantidad Producida (Real)</label>
                                 <input type="number" step="0.01" class="form-control" id="cantidadProducidaReal" th:field="*{cantidadProducidaReal}">
                             </div>
-							<div class="col-md-4 mb-3">
+							<div class="col-md-6 mb-3">
 							    <label for="estado" class="form-label">Estado</label>
 							    <select class="form-select" id="estado" th:field="*{estado}">
 							        <option value="Pendiente">Pendiente (Automático)</option>
@@ -66,6 +88,63 @@
             </div>
         </div>
     </div>
+    
+    <script>
+    document.getElementById('btnVerificarStock').addEventListener('click', function() {
+        const productoId = document.getElementById('producto').value;
+        const cantidad = document.getElementById('cantidadTeorica').value;
+
+        if (!productoId || !cantidad) {
+            alert('Por favor, selecciona un producto y especifica la cantidad a producir.');
+            return;
+        }
+
+        fetch(`/api/stock/verificar?productoId=${productoId}&cantidad=${cantidad}`)
+            .then(response => response.json())
+            .then(data => {
+                const tablaBody = document.getElementById('tablaStockBody');
+                const resultadoDiv = document.getElementById('resultadoStock');
+                const alertaDiv = document.getElementById('alertaStock');
+                
+                tablaBody.innerHTML = ''; // Limpiar resultados anteriores
+                alertaDiv.style.display = 'none';
+                let stockInsuficiente = false;
+
+                if (data.length === 0) {
+                     tablaBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No se encontró una fórmula para este producto.</td></tr>';
+                } else {
+                    data.forEach(item => {
+                        if (!item.suficiente) {
+                            stockInsuficiente = true;
+                        }
+                        const row = `
+                            <tr>
+                                <td>${item.materiaPrima}</td>
+                                <td>${item.requerido} ${item.unidad}</td>
+                                <td>${item.disponible} ${item.unidad}</td>
+                                <td>
+                                    <span class="badge ${item.suficiente ? 'bg-success' : 'bg-danger'}">
+                                        ${item.suficiente ? 'OK' : 'Falta'}
+                                    </span>
+                                </td>
+                            </tr>
+                        `;
+                        tablaBody.innerHTML += row;
+                    });
+                }
+
+                if (stockInsuficiente) {
+                    alertaDiv.style.display = 'block';
+                }
+                
+                resultadoDiv.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error al verificar el stock:', error);
+                alert('Hubo un error al consultar el stock. Revisa la consola para más detalles.');
+            });
+    });
+    </script>
 </div>
 </body>
 </html>

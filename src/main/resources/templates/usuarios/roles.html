@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Gestión de Roles', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <h1>Gestión de Roles del Sistema</h1>
+    <p class="text-muted">Los roles definen los permisos que tendrán los usuarios en la aplicación.</p>
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Roles Existentes</h4></div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr th:each="rol : ${roles}">
+                            <td th:text="${rol.nombre}"></td>
+                            <td class="text-end">
+                                <a th:href="@{/roles/borrar/{id}(id=${rol.id})}" class="btn btn-sm btn-outline-danger py-0">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Añadir Nuevo Rol</h4></div>
+                <div class="card-body">
+                    <form th:action="@{/roles/guardar}" th:object="${newRol}" method="post">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Rol</label>
+                            <input type="text" class="form-control" th:field="*{nombre}" placeholder="Ej: OPERARIO" required>
+                            <div class="form-text">El prefijo "ROLE_" se añadirá automáticamente.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Guardar Rol</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -17,4 +17,11 @@ public class RolService {
     public List<Roles> findAll() {
         return rolRepository.findAll();
     }
+    public void save(Roles rol) {
+        rolRepository.save(rol);
+    }
+
+    public void deleteById(Integer id) {
+        rolRepository.deleteById(id);
+    }
 }

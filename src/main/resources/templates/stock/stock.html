@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo='Stock de Productos Terminados', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <h1>Stock de Productos Terminados</h1>
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Detalle de Stock por Lote de Producción</h4></div>
+                <div class="card-body">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Lote de Origen</th>
+                            <th>Cantidad Actual</th>
+                            <th>Fecha de Entrada</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${stockPage.content}">
+                            <td th:text="${item.producto.nombre}"></td>
+                            <td th:text="${item.loteProducto.codigoLoteInterno}"></td>
+                            <td th:text="${#numbers.formatDecimal(item.cantidadActual, 1, 0)}"></td>
+                            <td th:text="${#temporals.format(item.fechaEntrada, 'dd/MM/yyyy HH:mm')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    
+                    <nav aria-label="Page navigation" th:if="${stockPage.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${stockPage.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/stock(page=0)}">Primera</a>
+                            </li>
+                            <li class="page-item" th:classappend="${!stockPage.hasPrevious()} ? 'disabled'">
+                                <a class="page-link" th:href="@{/stock(page=${stockPage.number - 1})}">Anterior</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, stockPage.totalPages - 1)}" th:classappend="${i == stockPage.number} ? 'active'">
+                                <a class="page-link" th:href="@{/stock(page=${i})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${!stockPage.hasNext()} ? 'disabled'">
+                                <a class="page-link" th:href="@{/stock(page=${stockPage.number + 1})}">Siguiente</a>
+                            </li>
+                            <li class="page-item" th:classappend="${stockPage.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/stock(page=${stockPage.totalPages - 1})}">Última</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Resumen de Stock por Producto</h4></div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-end">Cantidad Total Disponible</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="resumen : ${resumenStock}">
+                            <td th:text="${resumen.producto.nombre}"></td>
+                            <td class="text-end" th:text="${#numbers.formatDecimal(resumen.cantidadTotal, 1, 0)}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

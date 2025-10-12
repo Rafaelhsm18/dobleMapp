@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{/layout :: layout(titulo=${usuario.id == null} ? 'Nuevo Usuario' : 'Editar Usuario', contenido=~{::.contenido-principal})}">
+<body>
+<div class="contenido-principal">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h3 th:text="${usuario.id == null} ? 'Nuevo Usuario' : 'Editar Usuario'"></h3>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/usuarios/guardar}" th:object="${usuario}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nombre de Usuario (Username)</label>
+                            <input type="text" class="form-control" th:field="*{username}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" th:field="*{password}" th:placeholder="${usuario.id == null} ? '' : 'Dejar en blanco para no cambiar'">
+                        </div>
+                        <div class="mb-3">
+                            <label for="empleado" class="form-label">Empleado Asociado</label>
+                            <select class="form-select" th:field="*{empleado}">
+                                <option value="">-- Sin Empleado Asociado --</option>
+                                <option th:each="emp : ${empleados}" th:value="${emp.id}" th:text="${emp.nombre} + ' ' + ${emp.apellidos}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Roles</label>
+                            <div>
+                                <div th:each="rol : ${roles}" class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" th:field="*{roles}" th:value="${rol.id}">
+                                    <label class="form-check-label" th:text="${rol.nombre.replace('ROLE_', '')}"></label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="activo" th:field="*{activo}">
+                            <label class="form-check-label" for="activo">Usuario Activo</label>
+                        </div>
+
+                        <hr class="my-4">
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/usuarios}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

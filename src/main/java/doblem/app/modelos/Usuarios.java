@@ -40,4 +40,56 @@ public class Usuarios {
         inverseJoinColumns = @JoinColumn(name = "ID_Rol")
     )
     private Set<Roles> roles;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Boolean getActivo() {
+		return activo;
+	}
+
+	public void setActivo(Boolean activo) {
+		this.activo = activo;
+	}
+
+	public Empleados getEmpleado() {
+		return empleado;
+	}
+
+	public void setEmpleado(Empleados empleado) {
+		this.empleado = empleado;
+	}
+
+	public Set<Roles> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Roles> roles) {
+		this.roles = roles;
+	}
+    
+    
+    
+    
 }

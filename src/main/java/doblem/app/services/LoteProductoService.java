@@ -17,13 +17,15 @@ public class LoteProductoService {
     private final LoteProductoRepository loteProductoRepository;
     private final PlantillaProcesoService plantillaService;
     private final RegistroEtapasLoteService registroEtapasService;
+    private final StockProductoTerminadoService stockService;
 
     // Usamos @Lazy para romper una posible dependencia circular entre servicios
     @Autowired
-    public LoteProductoService(LoteProductoRepository loteProductoRepository, @Lazy PlantillaProcesoService plantillaService, @Lazy RegistroEtapasLoteService registroEtapasService) {
+    public LoteProductoService(LoteProductoRepository loteProductoRepository, @Lazy PlantillaProcesoService plantillaService, @Lazy RegistroEtapasLoteService registroEtapasService,@Lazy StockProductoTerminadoService stockService) {
         this.loteProductoRepository = loteProductoRepository;
         this.plantillaService = plantillaService;
         this.registroEtapasService = registroEtapasService;
+        this.stockService = stockService;
     }
 
     public List<LoteProducto> findAll() {
@@ -61,6 +63,12 @@ public class LoteProductoService {
             lote.setEstado("En Proceso");
         } else if (numEtapasCompletadas >= numEtapasRequeridas && numEtapasRequeridas > 0) {
             lote.setEstado("Finalizado");
+        }
+        
+        if (numEtapasCompletadas >= numEtapasRequeridas && numEtapasRequeridas > 0) {
+            lote.setEstado("Finalizado");
+            // Al finalizar, llamamos al servicio de stock
+            stockService.crearOActualizarStockParaLote(lote);
         }
         
         save(lote);
