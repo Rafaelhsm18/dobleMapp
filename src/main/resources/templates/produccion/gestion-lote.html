@@ -21,6 +21,10 @@
                             <th:block th:with="registroEncontrado=false">
                                 <th:block th:each="reg : ${registros}" th:if="${reg.etapa.id == paso.etapa.id}">
                                     <small class="text-success"><i class="bi bi-check-circle-fill"></i> Completado</small>
+                                    <a th:href="@{/produccion/gestionar/{loteId}/borrar-registro/{registroId}(loteId=${lote.id}, registroId=${reg.id})}"
+                                       class="btn btn-sm btn-outline-danger ms-2 py-0" title="Borrar Registro de Etapa">
+                                        <i class="bi bi-x-lg"></i>
+                                    </a>
                                     <th:block th:with="registroEncontrado=true"></th:block>
                                 </th:block>
                                 <small th:if="${!registroEncontrado}" class="text-muted">Pendiente</small>
@@ -35,8 +39,9 @@
                 </ul>
             </div>
         </div>
+
         <div class="col-md-5">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm mb-4">
                 <div class="card-header"><h4>Registrar Siguiente Etapa</h4></div>
                 <div class="card-body">
                     <form th:action="@{/produccion/gestionar/{loteId}/registrar-etapa(loteId=${lote.id})}" method="post">
@@ -72,6 +77,64 @@
                     </form>
                 </div>
             </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>Gestión de Incidencias</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Registrar Nueva Incidencia</h5>
+                    <form th:action="@{/produccion/gestionar/{loteId}/registrar-incidencia(loteId=${lote.id})}" method="post">
+                         <input type="hidden" name="id" th:value="${nuevaIncidencia.id}" /> <div class="mb-3">
+                            <label for="empleadoReporta" class="form-label">Reportado por</label>
+                            <select class="form-select" id="empleadoReporta" name="empleadoReportaId">
+                                <option value="">-- Seleccionar Empleado (Opcional) --</option>
+                                <option th:each="emp : ${empleados}" th:value="${emp.id}" th:text="${emp.nombre} + ' ' + ${emp.apellidos}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción Detallada</label>
+                            <textarea class="form-control" name="descripcion" id="descripcion" rows="3" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Registrar Incidencia
+                        </button>
+                    </form>
+
+                    <h5 class="mt-4">Historial de Incidencias</h5>
+                    <div th:if="${#lists.isEmpty(incidencias)}" class="alert alert-info">
+                        No hay incidencias registradas para este lote.
+                    </div>
+                    <ul class="list-group">
+                        <li th:each="incidencia : ${incidencias}" class="list-group-item d-flex justify-content-between align-items-center"
+                            th:classappend="${incidencia.resuelta} ? 'list-group-item-success' : 'list-group-item-warning'">
+                            
+                            <div>
+                                <strong th:text="${incidencia.descripcion}"></strong>
+                                <small class="d-block text-muted">
+                                    Reportado: <span th:text="${#temporals.format(incidencia.fechaReporte, 'dd/MM/yy HH:mm')}"></span>
+                                    | Por: <span th:text="${incidencia.empleadoReporta != null} ? ${incidencia.empleadoReporta.nombre} + ' ' + ${incidencia.empleadoReporta.apellidos} : 'N/A'"></span>
+                                </small>
+                            </div>
+                            
+                            <div class="btn-group" role="group">
+                                <span th:if="${incidencia.resuelta}" class="badge bg-success me-2">Resuelta</span>
+                                <a th:unless="${incidencia.resuelta}"
+                                   th:href="@{/produccion/gestionar/{loteId}/resolver-incidencia/{incidenciaId}(loteId=${lote.id}, incidenciaId=${incidencia.id})}"
+                                   class="btn btn-sm btn-outline-success me-2" title="Marcar como Resuelta">
+                                    <i class="bi bi-check-lg"></i>
+                                </a>
+                                <a th:href="@{/produccion/gestionar/{loteId}/borrar-incidencia/{incidenciaId}(loteId=${lote.id}, incidenciaId=${incidencia.id})}"
+                                   class="btn btn-sm btn-outline-danger" title="Borrar">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
         </div>
     </div>
 </div>

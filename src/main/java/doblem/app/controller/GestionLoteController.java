@@ -17,28 +17,18 @@ public class GestionLoteController {
     private final RegistroEtapasLoteService registroService;
     private final EtapaMaestroService etapaMaestroService;
     private final EmpleadoService empleadoService;
-    private final PlantillaProcesoService plantillaService; // <-- SERVICIO AÑADIDO
+    private final PlantillaProcesoService plantillaService;
+    private final IncidenciaLoteService incidenciaService; // <-- NUEVO SERVICIO AÑADIDO
 
 
-    public GestionLoteController(LoteProductoService loteService, RegistroEtapasLoteService registroService, EtapaMaestroService etapaMaestroService, EmpleadoService empleadoService,PlantillaProcesoService plantillaService) {
+    public GestionLoteController(LoteProductoService loteService, RegistroEtapasLoteService registroService, EtapaMaestroService etapaMaestroService, EmpleadoService empleadoService,PlantillaProcesoService plantillaService, IncidenciaLoteService incidenciaService) { // <-- NUEVO SERVICIO EN CONSTRUCTOR
         this.loteService = loteService;
         this.registroService = registroService;
         this.etapaMaestroService = etapaMaestroService;
         this.empleadoService = empleadoService;
-        this.plantillaService = plantillaService; // <-- SERVICIO AÑADIDO
+        this.plantillaService = plantillaService;
+        this.incidenciaService = incidenciaService; // <-- ASIGNACIÓN
     }
-
-//    @GetMapping
-//    public String mostrarGestionLote(@PathVariable Integer loteId, Model model) {
-//        LoteProducto lote = loteService.findById(loteId);
-//        model.addAttribute("lote", lote);
-//        model.addAttribute("registros", registroService.findByLoteId(loteId));
-//        model.addAttribute("etapasMaestro", etapaMaestroService.findAll());
-//        model.addAttribute("empleados", empleadoService.findAll());
-//        return "produccion/gestion-lote";
-//    }
-    
-    
     
     @GetMapping
     public String mostrarGestionLote(@PathVariable Integer loteId, Model model) {
@@ -65,48 +55,12 @@ public class GestionLoteController {
         model.addAttribute("registros", registrosExistentes); // Los pasos ya hechos
         model.addAttribute("pasosPendientes", pasosPendientes); // Los pasos que faltan
         model.addAttribute("empleados", empleadoService.findAll());
+        model.addAttribute("incidencias", incidenciaService.findByLoteId(loteId)); // <-- INCIDENCIAS
+        model.addAttribute("nuevaIncidencia", new IncidenciaLote()); // <-- OBJETO PARA EL FORMULARIO
+        
         return "produccion/gestion-lote";
     }
 
-//    @PostMapping("/registrar-etapa")
-//    public String registrarEtapa(@PathVariable Integer loteId, @ModelAttribute RegistroEtapasLote registro) {
-//        LoteProducto lote = loteService.findById(loteId);
-//        registro.setLoteProducto(lote);
-//        if (registro.getFechaCompletado() == null) {
-//            registro.setFechaCompletado(LocalDateTime.now());
-//        }
-//        registroService.save(registro);
-//        return "redirect:/produccion/gestionar/" + loteId;
-//    }
-    
-//    @PostMapping("/registrar-etapa")
-//    public String registrarEtapa(@PathVariable Integer loteId, @ModelAttribute RegistroEtapasLote registro) {
-//        LoteProducto lote = loteService.findById(loteId);
-//        registro.setLoteProducto(lote);
-//        if (registro.getFechaCompletado() == null) {
-//            registro.setFechaCompletado(LocalDateTime.now());
-//        }
-//        // Aseguramos que el valor del checkbox se guarde como true/false, no nulo
-//        if (registro.getConfirmado() == null) {
-//            registro.setConfirmado(false);
-//        }
-//        registroService.save(registro);
-//        return "redirect:/produccion/gestionar/" + loteId;
-//    }
-    
-//    @PostMapping("/registrar-etapa")
-//    public String registrarEtapa(@PathVariable Integer loteId, @ModelAttribute RegistroEtapasLote registro) {
-//        // ... (código existente para guardar el registro)
-//        registroService.save(registro);
-//        
-//        // --- LÍNEA AÑADIDA ---
-//        loteService.actualizarEstadoLote(loteId); // Actualizamos el estado del lote
-//
-//        return "redirect:/produccion/gestionar/" + loteId;
-//    }
-
-    
-    // --- MÉTODO CORREGIDO ---
     @PostMapping("/registrar-etapa")
     public String registrarEtapa(@PathVariable Integer loteId,
                                  @RequestParam("etapa") Integer etapaId,
@@ -140,20 +94,45 @@ public class GestionLoteController {
 
         return "redirect:/produccion/gestionar/" + loteId;
     }
-    
+
     @GetMapping("/borrar-registro/{registroId}")
     public String borrarRegistro(@PathVariable Integer loteId, @PathVariable Integer registroId) {
         registroService.deleteById(registroId);
-        
-        // --- LÍNEA AÑADIDA ---
-        loteService.actualizarEstadoLote(loteId); // Actualizamos el estado del lote
-
+        loteService.actualizarEstadoLote(loteId);
         return "redirect:/produccion/gestionar/" + loteId;
     }
 
-//    @GetMapping("/borrar-registro/{registroId}")
-//    public String borrarRegistro(@PathVariable Integer loteId, @PathVariable Integer registroId) {
-//        registroService.deleteById(registroId);
-//        return "redirect:/produccion/gestionar/" + loteId;
-//    }
+    // --- NUEVOS MÉTODOS PARA INCIDENCIAS ---
+
+    @PostMapping("/registrar-incidencia")
+    public String registrarIncidencia(@PathVariable Integer loteId, 
+                                      @ModelAttribute IncidenciaLote incidencia,
+                                      @RequestParam(name = "empleadoReportaId", required = false) Integer empleadoReportaId) {
+        
+        LoteProducto lote = loteService.findById(loteId);
+        incidencia.setLoteProducto(lote);
+        incidencia.setFechaReporte(LocalDateTime.now());
+        
+        if (empleadoReportaId != null) {
+            Empleados empleado = empleadoService.findById(empleadoReportaId);
+            incidencia.setEmpleadoReporta(empleado);
+        }
+        
+        incidencia.setResuelta(false); // Asegurar que siempre empieza sin resolver
+        incidenciaService.save(incidencia);
+        
+        return "redirect:/produccion/gestionar/" + loteId;
+    }
+    
+    @GetMapping("/resolver-incidencia/{incidenciaId}")
+    public String resolverIncidencia(@PathVariable Integer loteId, @PathVariable Integer incidenciaId) {
+        incidenciaService.marcarComoResuelta(incidenciaId);
+        return "redirect:/produccion/gestionar/" + loteId;
+    }
+
+    @GetMapping("/borrar-incidencia/{incidenciaId}")
+    public String borrarIncidencia(@PathVariable Integer loteId, @PathVariable Integer incidenciaId) {
+        incidenciaService.deleteById(incidenciaId);
+        return "redirect:/produccion/gestionar/" + loteId;
+    }
 }
